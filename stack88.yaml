@@ -2,6 +2,8 @@ resolver: nightly-2020-03-28
 packages:
 - .
 extra-deps:
+- base-compat-0.11.0
+- base-compat-batteries-0.11.0
 - haskell-lsp-0.21.0.0
 - haskell-lsp-types-0.21.0.0
 - lsp-test-0.10.2.0
