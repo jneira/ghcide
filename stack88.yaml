@@ -8,6 +8,7 @@ extra-deps:
 - haskell-lsp-types-0.21.0.0
 - lsp-test-0.10.2.0
 - ghc-check-0.1.0.3
+- shake-0.18.4
 
 nix:
   packages: [zlib]
