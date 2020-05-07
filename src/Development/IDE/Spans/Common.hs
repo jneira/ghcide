@@ -12,6 +12,7 @@ module Development.IDE.Spans.Common (
 , spanDocToMarkdown
 , spanDocToMarkdownForTest
 , DocMap
+, trimExcessLineBreaks
 ) where
 
 import qualified Data.Text as T
@@ -61,7 +62,8 @@ emptySpanDoc = SpanDocText []
 spanDocToMarkdown :: SpanDoc -> [T.Text]
 #if MIN_GHC_API_VERSION(8,6,0)
 spanDocToMarkdown (SpanDocString docs)
-  = [T.pack $ haddockToMarkdown $ H.toRegular $ H._doc $ H.parseParas Nothing $ unpackHDS docs]
+  -- = [T.pack $ haddockToMarkdown $ H.toRegular $ H._doc $ H.parseParas Nothing $ unpackHDS docs]
+  = [T.pack $ trimExcessLineBreaks $ haddockToMarkdown $ H.toRegular $ H._doc $ H.parseParas Nothing $ unpackHDS docs]
 #else
 spanDocToMarkdown (SpanDocString _)
   = []
@@ -71,6 +73,12 @@ spanDocToMarkdown (SpanDocText txt) = txt
 spanDocToMarkdownForTest :: String -> String
 spanDocToMarkdownForTest
   = haddockToMarkdown . H.toRegular . H._doc . H.parseParas Nothing
+
+trimExcessLineBreaks :: String -> String
+trimExcessLineBreaks ('\n':'\n':'`':'`':'`':xs) = trimExcessLineBreaks ('\n':'`':'`':'`':xs)
+trimExcessLineBreaks ('\n':'\n':'\n':xs) = trimExcessLineBreaks ('\n':'\n':xs)
+trimExcessLineBreaks (x:xs) = x : trimExcessLineBreaks xs
+trimExcessLineBreaks [] = []
 
 -- Simple (and a bit hacky) conversion from Haddock markup to Markdown
 haddockToMarkdown
@@ -123,9 +131,10 @@ haddockToMarkdown (H.DocHeader (H.Header level title))
   = replicate level '#' ++ " " ++ haddockToMarkdown title
 
 haddockToMarkdown (H.DocUnorderedList things)
-  = '\n' : (unlines $ map (("+ " ++) . trimStart . splitForList . haddockToMarkdown) things)
+  -- = '\n' : (unlines $ map (("- " ++) . trimStart' . splitForList . haddockToMarkdown) things)
+  = '\n' : (unlines $ map ( haddockToMarkdown) things)
 haddockToMarkdown (H.DocOrderedList things)
-  = '\n' : (unlines $ map (("1. " ++) . trimStart . splitForList . haddockToMarkdown) things)
+  = '\n' : (unlines $ map (("1. " ++) . trimStart' . splitForList . haddockToMarkdown) things)
 haddockToMarkdown (H.DocDefList things)
   = '\n' : (unlines $ map (\(term, defn) -> "+ **" ++ haddockToMarkdown term ++ "**: " ++ haddockToMarkdown defn) things)
 
@@ -147,4 +156,10 @@ splitForList :: String -> String
 splitForList s
   = case lines s of
       [] -> ""
-      (first:rest) -> unlines $ first : map (("  " ++) . trimStart) rest
+      (first:rest) -> unlines $ first : map (("  " ++) . trimStart') rest
+
+-- We need to preserve "\n```haskell\n" intact, else emacs does not
+-- render the markdown properly
+trimStart' :: [Char] -> [Char]
+trimStart' str@('\n':_) = str
+trimStart' str = trimStart str

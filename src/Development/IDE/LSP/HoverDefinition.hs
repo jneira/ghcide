@@ -36,7 +36,9 @@ documentHighlight = request "DocumentHighlight" highlightAtPoint (List []) List
 
 foundHover :: (Maybe Range, [T.Text]) -> Maybe Hover
 foundHover (mbRange, contents) =
-  Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate sectionSeparator contents) mbRange
+  -- Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate sectionSeparator contents) mbRange
+  Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate "* * *\n" contents) mbRange
+
 
 setHandlersDefinition, setHandlersHover, setHandlersTypeDefinition, setHandlersDocHighlight :: PartialHandlers c
 setHandlersDefinition = PartialHandlers $ \WithMessage{..} x ->

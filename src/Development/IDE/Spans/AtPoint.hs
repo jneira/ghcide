@@ -92,7 +92,8 @@ atPoint IdeOptions{} hf dm pos = listToMaybe $ pointCommand hf pos hoverInfo
   where
     -- Hover info for values/data
     hoverInfo ast =
-      (Just range, prettyNames ++ map wrapHaskell prettyTypes)
+      -- (Just range, prettyNames ++ map wrapHaskell prettyTypes)
+      (Just range, fmap (T.pack . trimExcessLineBreaks . T.unpack) $ (T.intercalate "\n" $ map wrapHaskell prettyTypes) : prettyNames)
       where
         range = realSrcSpanToRange $ nodeSpan ast
 
@@ -188,4 +189,3 @@ showName = T.pack . prettyprint
   where
     prettyprint x = renderWithStyle unsafeGlobalDynFlags (ppr x) style
     style = mkUserStyle unsafeGlobalDynFlags neverQualify AllTheWay
-
