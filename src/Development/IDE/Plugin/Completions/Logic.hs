@@ -134,7 +134,7 @@ mkCompl :: IdeOptions -> CompItem -> CompletionItem
 mkCompl IdeOptions{..} CI{origName,importedFrom,thingType,label,isInfix,docs} =
   CompletionItem label kind (List []) ((colon <>) <$> typeText)
     -- (Just $ CompletionDocMarkup $ MarkupContent MkMarkdown $ T.intercalate sectionSeparator docs')
-    (Just $ CompletionDocMarkup $ MarkupContent MkMarkdown $ T.intercalate "* * *\n" docs')
+    (Just $ CompletionDocMarkup $ MarkupContent MkMarkdown $ T.intercalate "- \n" docs')
     Nothing Nothing Nothing Nothing (Just insertText) (Just Snippet)
     Nothing Nothing Nothing Nothing Nothing
   where kind = Just $ occNameToComKind typeText $ occName origName

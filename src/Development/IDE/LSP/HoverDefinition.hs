@@ -36,8 +36,9 @@ documentHighlight = request "DocumentHighlight" highlightAtPoint (List []) List
 
 foundHover :: (Maybe Range, [T.Text]) -> Maybe Hover
 foundHover (mbRange, contents) =
+  -- The following is a temporary workaround until https://github.com/emacs-lsp/lsp-ui/issues/442 is resolved.
   -- Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate sectionSeparator contents) mbRange
-  Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate "* * *\n" contents) mbRange
+  Just $ Hover (HoverContents $ MarkupContent MkMarkdown $ T.intercalate "- \n" contents) mbRange
 
 
 setHandlersDefinition, setHandlersHover, setHandlersTypeDefinition, setHandlersDocHighlight :: PartialHandlers c
