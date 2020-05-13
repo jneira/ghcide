@@ -8,7 +8,7 @@ extra-deps:
 - haskell-lsp-types-0.21.0.0
 - lsp-test-0.10.2.0
 - ghc-check-0.1.0.3
-- opentelemetry-0.3.2
+- opentelemetry-0.4.0
 - hie-bios-0.5.0
 # for ghc-8.10
 - Cabal-3.2.0.0
