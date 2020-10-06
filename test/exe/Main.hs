@@ -69,6 +69,7 @@ main = do
         void (skipManyTill anyMessage message :: Session WorkDoneProgressBeginNotification)
         closeDoc doc
         void (skipManyTill anyMessage message :: Session WorkDoneProgressEndNotification)
+        error "test rerun"
     , initializeResponseTests
     , completionTests
     , cppTests
@@ -1711,7 +1712,7 @@ addFunctionConstraintTests = let
     , "eq :: " <> constraint <> " => Pair a b -> Pair a b -> Bool"
     , "eq (Pair x y) (Pair x' y') = x == x' && y == y'"
     ]
-  
+
   incompleteConstraintSourceCodeWithNewlinesInTypeSignature :: T.Text -> T.Text
   incompleteConstraintSourceCodeWithNewlinesInTypeSignature constraint =
     T.unlines
