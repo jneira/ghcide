@@ -5,6 +5,7 @@ trigger:
     include:
       - master
       - azure*
+      - stack-support
 
 # Enable PR triggers that target the master branch
 pr:
